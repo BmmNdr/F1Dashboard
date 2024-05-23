@@ -91,19 +91,10 @@ def plot_with_matplotlib(pole_lap_time, pole_lap, fastest_laps, team_colors, ses
 
     # Return the figure and axes objects
     return fig, ax
+
+def test():
+    pole_lap_time, pole_lap, fastest_laps, team_colors, session = get_fastest_laps()
     
+    dataFrame = pd.DataFrame(fastest_laps, columns=['Driver', 'LapTime', 'LapTimeDelta'])
     
-def create_dashboard():
-
-    # Call the plot function to get the figure and axes objects
-    fig, ax = plot_with_matplotlib(*get_fastest_laps())
-
-    # Create a panel object from the figure
-    pn_row = pn.pane.Bokeh(Column(fig), height=400)
-
-    # Return the dashboard layout
-    return pn.Row(pn_row)
-
-# Display the dashboard
-dashboard = create_dashboard()
-dashboard.show()
+    return dataFrame
