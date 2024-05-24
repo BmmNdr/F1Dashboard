@@ -1,10 +1,10 @@
-import lastRaceDriverFastLap as lrfl
+import BestLaps as bl
 import Standings as st
-from taipy.gui import Gui, notify
+from taipy.gui import Gui
 import taipy.gui.builder as tgb
 import pandas as pd
 
-fig = lrfl.get_fastest_laps_fig()
+fig = bl.get_fastest_laps_fig()
 
 DriverStandings = st.get_driver_standings()
 TeamStandings = st.get_team_standings()
