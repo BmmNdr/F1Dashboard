@@ -7,7 +7,7 @@ import pandas as pd
 fig = lrfl.get_fastest_laps_fig()
 
 dfDriverStandings = pd.DataFrame(st.get_driver_standings())
-colDriverStandings = ['position', 'name', 'nationality', 'team', 'points']
+colDriverStandings = ['position', 'name', 'team', 'points']
 dfTeamStandings = pd.DataFrame(st.get_team_standings())
 colTeamStandings = ['position', 'team', 'points']
 

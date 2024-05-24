@@ -24,14 +24,12 @@ def get_driver_standings(year = None):
         columns = row.find_all('td')
         position = columns[1].text.strip()
         name = columns[2].text.strip().replace('\n', ' ')[:-4]
-        nationality = columns[3].text.strip()
         team = columns[4].text.strip()
         points = columns[5].text.strip()
 
         standings.append({
             'position': position,
             'name': name,
-            'nationality': nationality,
             'team': team,
             'points': points
         })

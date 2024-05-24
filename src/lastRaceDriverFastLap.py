@@ -9,7 +9,7 @@ import plotly.express as px
 
 
 def get_last_f1_race(year):
-    url = f"https://api.openf1.org/v1/meetings?year={year}"
+    url = f"https://api.openf1.org/v1/sessions?session_name=Race&year={year}"
     
     try:
         response = requests.get(url)
@@ -18,7 +18,12 @@ def get_last_f1_race(year):
         if response.status_code == 200:
             if data:
                 last_race = data[-1]  # Assuming the last item in the list is the latest race
-                race_name = last_race.get("meeting_name")
+                meeting_key = last_race.get("meeting_key")
+                
+                url = f"https://api.openf1.org/v1/meetings?meeting_key={meeting_key}"
+                data = requests.get(url).json()
+                
+                race_name = data[0]['meeting_name']
                 
                 if race_name:
                     return race_name, year
