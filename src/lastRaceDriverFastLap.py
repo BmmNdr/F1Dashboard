@@ -5,8 +5,8 @@ import fastf1.plotting as ff1plt
 from fastf1.core import Laps
 import datetime
 import requests
-import panel as pn
-from bokeh.models import Column
+import plotly.express as px
+
 
 def get_last_f1_race(year):
     url = f"https://api.openf1.org/v1/meetings?year={year}"
@@ -33,7 +33,7 @@ def get_last_f1_race(year):
         return None
 
 def get_fastest_laps():
-    race_name, year = get_last_f1_race(2024)
+    race_name, year = get_last_f1_race(datetime.datetime.now().year)
 
     if(race_name != None):
         session = ff1.get_session(year, race_name, 'R')
@@ -89,12 +89,43 @@ def plot_with_matplotlib(pole_lap_time, pole_lap, fastest_laps, team_colors, ses
     plt.suptitle(f"{session.event['EventName']} {session.event.year} Race\n"
                  f"Fastest Lap: {lap_time_string} ({pole_lap['Driver']})")
 
-    # Return the figure and axes objects
-    return fig, ax
-
-def test():
+    plt.show()
+    
+def get_fastest_laps_fig():
     pole_lap_time, pole_lap, fastest_laps, team_colors, session = get_fastest_laps()
-    
-    dataFrame = pd.DataFrame(fastest_laps, columns=['Driver', 'LapTime', 'LapTimeDelta'])
-    
-    return dataFrame
+
+    lap_time_string = pole_lap_time.strftime('%M:%S.%f')[:-3]
+
+    drivers = fastest_laps['Driver'].values
+    lap_times = fastest_laps['LapTimeDelta'].values
+
+    df = pd.DataFrame({
+        'DeltaTime' : lap_times,
+        'Driver' : drivers,
+        'Team' : team_colors
+    })
+
+    df['DeltaTime'] = pd.to_numeric(df['DeltaTime'])  # Convert 'DeltaTime' column to numeric type
+
+    df = df.sort_values(by='DeltaTime')  # Sort the DataFrame by 'DeltaTime' column
+
+    fig = px.bar(df, y='Driver', x='DeltaTime', color='Team',barmode='group', orientation='h')
+
+    fig.update_layout(
+        height=800,  # Set the height of the plot
+        width=1000,  # Set the width of the plot
+        bargap=0.1,  # Set the gap between bars
+        barmode='stack',  # Stack the bars on top of each other
+        yaxis={'categoryorder':'array', 'categoryarray': df['Driver']},  # Sort the y-axis categories according to the 'Driver' column
+        xaxis={'range': [df['DeltaTime'].min() - 0.5, df['DeltaTime'].max() + 0.5]},  # Set the x-axis range
+        yaxis_title='Driver',  # Set the y-axis title
+        xaxis_title='DeltaTime',  # Set the x-axis title
+        title={
+            'text': f"{session.session_info['Meeting']['Name']}\n\nFastest Lap: {lap_time_string} ({pole_lap['Driver']})",
+            'x': 0.5,  # Center the title horizontally
+            'y': 0.95  # Position the title near the top of the plot
+        },
+        showlegend=False  # Remove the legend
+    )
+
+    return fig
