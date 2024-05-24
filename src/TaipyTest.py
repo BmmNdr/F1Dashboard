@@ -6,23 +6,35 @@ import pandas as pd
 
 fig = lrfl.get_fastest_laps_fig()
 
-dfDriverStandings = pd.DataFrame(st.get_driver_standings())
-colDriverStandings = ['position', 'name', 'team', 'points']
-dfTeamStandings = pd.DataFrame(st.get_team_standings())
-colTeamStandings = ['position', 'team', 'points']
+DriverStandings = st.get_driver_standings()
+TeamStandings = st.get_team_standings()
+
+dfDriverStandingsIndex = pd.DataFrame(DriverStandings)
+dfTeamStandingsIndex = pd.DataFrame(TeamStandings)
 
 # Definition of the page
-with tgb.Page() as page:
+with tgb.Page() as index:
 
-    with tgb.layout(columns="1 1"):
+    with tgb.layout(columns="1 1 1 1"):
         with tgb.part():
-            tgb.text("Driver Standings", size="h2")
-            tgb.table("{dfDriverStandings}", title="Driver Standings")
+            tgb.table("{dfDriverStandingsIndex}", columns=['position', 'name'], title="Driver Standings")
         
         with tgb.part():
-            tgb.text("Team Standings", size="h2")
-            tgb.table("{dfTeamStandings}", title="Team Standings")
-    
-    tgb.chart(figure="{fig}", title="Fastest Laps")
+            tgb.table("{dfTeamStandingsIndex}", columns=['position', 'team'], title="Team Standings")
 
-Gui(page).run(debug=True)
+    with tgb.layout(columns="2 1 1"):
+        with tgb.part():
+            tgb.chart(figure="{fig}", title="Fastest Laps")
+
+with tgb.Page() as DriverStandings:
+    tgb.table("{dfDriverStandingsIndex}", title="Driver Standings")
+    
+with tgb.Page() as TeamStandings:
+    tgb.table("{dfTeamStandingsIndex}", title="Team Standings")
+
+pages = {"/":"<|toggle|theme|>\n<center>\n<|navbar|>\n</center>",
+         "Dashboard":index,
+         "Driver_Standings": DriverStandings,
+         "Team_Standings": TeamStandings,}
+
+Gui(pages=pages).run(debug=True)
