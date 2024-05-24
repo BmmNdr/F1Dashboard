@@ -32,8 +32,10 @@ def get_last_f1_race(year):
     except requests.exceptions.RequestException as e:
         return None
 
-def get_fastest_laps():
-    race_name, year = get_last_f1_race(datetime.datetime.now().year)
+def get_fastest_laps(year=None, race_name=None):
+    
+    if(year == None or race_name == None):
+        race_name, year = get_last_f1_race(datetime.datetime.now().year)
 
     if(race_name != None):
         session = ff1.get_session(year, race_name, 'R')
