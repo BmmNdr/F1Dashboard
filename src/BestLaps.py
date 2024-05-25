@@ -97,7 +97,7 @@ def plot_with_matplotlib(pole_lap_time, pole_lap, fastest_laps, team_colors, ses
                  f"Fastest Lap: {lap_time_string} ({pole_lap['Driver']})")
 
     plt.show()
-    
+  
 def get_fastest_laps_fig():
     pole_lap_time, pole_lap, fastest_laps, team_colors, session = get_fastest_laps()
 

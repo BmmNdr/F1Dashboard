@@ -24,13 +24,19 @@ def get_next_race_info(year = None):
     race_info = {
         'name': schedule.OfficialEventName[index],
         'location': schedule.Location[index],
-        'date': schedule.Session5DateUtc[index].strftime('%Y-%m-%d'),
-        'time': schedule.Session5DateUtc[index].strftime('%H:%M:%S') if schedule.Session5DateUtc[index] else 'TBD'
+        'date': schedule.Session5Date[index].strftime('%Y-%m-%d'),
+        'time': schedule.Session5Date[index].strftime('%H:%M:%S') if schedule.Session5Date[index] else 'TBD'
     }
 
     return race_info
 
-# Example usage
-if __name__ == "__main__":
-    next_race = get_next_race_info()
-    print(next_race)
+def coutdown_to_next(race_date):
+    race_date = datetime.datetime.strptime(race_date, "%Y-%m-%d")
+    current_date = datetime.datetime.now()
+    time_remaining = race_date - current_date  
+    
+    days_remaining = time_remaining.days
+    hours_remaining = time_remaining.seconds // 3600
+    minutes_remaining = (time_remaining.seconds % 3600) // 60
+    
+    return days_remaining, hours_remaining, minutes_remaining

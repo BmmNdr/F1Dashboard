@@ -1,0 +1,26 @@
+#nextRace {
+    color: #ffffff;
+    background-color: #000000;
+
+    height: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#nextRace * {
+    font-size: 30px;
+
+    padding: 10px;
+}
+
+#navbar {
+    color: #ffffff;
+    background-color: #e10600;
+    text-decoration: #ffffff;
+}
+
+#navbar  *{
+    color: #ffffff;
+}
