@@ -3,10 +3,8 @@ import Standings as st
 import NextRace as nr
 
 from taipy.gui import Gui
-from taipy.gui import Html
 import taipy.gui.builder as tgb
 import pandas as pd
-import datetime
 
 dfDriverStandingsIndex = pd.DataFrame(st.get_driver_standings())
 dfTeamStandingsIndex = pd.DataFrame(st.get_team_standings())
