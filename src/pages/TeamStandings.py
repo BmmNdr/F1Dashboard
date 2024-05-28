@@ -20,17 +20,17 @@ dfTeamStandings = pd.DataFrame(cache.team_standings(), columns=['team', 'points'
 dfTeamStandings.index += 1
 
 with col1:
-    col1.image(image=ImagePicture.get_team_profile_picture(dfTeamStandings.iloc[1]['team']), width=300, use_column_width=True)
+    col1.image(image=cache.team_profile_picture(dfTeamStandings.iloc[1]['team']), width=300, use_column_width=True)
     col1.markdown("<h2 style='text-align: center;'> 🥈 " + dfTeamStandings.iloc[1]['team'] + "</h2>", unsafe_allow_html=True)
     col1.markdown("<h5 style='text-align: center;'>" + dfTeamStandings.iloc[1]['points'] + " pts </h5>", unsafe_allow_html=True)
     
 with col2:
-    col2.image(image=ImagePicture.get_team_profile_picture(dfTeamStandings.iloc[0]['team']), width=300, use_column_width=True)
+    col2.image(image=cache.team_profile_picture(dfTeamStandings.iloc[0]['team']), width=300, use_column_width=True)
     col2.markdown("<h2 style='text-align: center;'> 🥇 " + dfTeamStandings.iloc[0]['team'] + "</h2>", unsafe_allow_html=True)
     col2.markdown("<h5 style='text-align: center;'>" + dfTeamStandings.iloc[1]['points'] + " pts </h5>", unsafe_allow_html=True)
     
 with col3:
-    col3.image(image=ImagePicture.get_team_profile_picture(dfTeamStandings.iloc[2]['team']), width=300, use_column_width=True)
+    col3.image(image=cache.team_profile_picture(dfTeamStandings.iloc[2]['team']), width=300, use_column_width=True)
     col3.markdown("<h2 style='text-align: center;'> 🥉 " + dfTeamStandings.iloc[2]['team'] + "</h2>", unsafe_allow_html=True)
     col3.markdown("<h5 style='text-align: center;'>" + dfTeamStandings.iloc[1]['points'] + " pts </h5>", unsafe_allow_html=True)
 
