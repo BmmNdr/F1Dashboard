@@ -37,70 +37,48 @@ def get_last_f1_race(year):
     except requests.exceptions.RequestException as e:
         return None
 
-def get_fastest_laps(year=None, race_name=None):
+def get_fastest_laps(year, race_name):
+
     
-    if(year == None or race_name == None):
-        race_name, year = get_last_f1_race(datetime.datetime.now().year)
+    session = ff1.get_session(year, race_name, 'R')
+    session.load()
 
-    if(race_name != None):
-        session = ff1.get_session(year, race_name, 'R')
-        session.load()
+    drivers = pd.unique(session.laps['Driver'])
 
-        drivers = pd.unique(session.laps['Driver'])
-
-        list_fastest_laps = list()
-        for drv in drivers:
-            drvs_fastest_lap = session.laps.pick_driver(drv).pick_fastest()
-            list_fastest_laps.append(drvs_fastest_lap)
+    list_fastest_laps = list()
+    for drv in drivers:
+        drvs_fastest_lap = session.laps.pick_driver(drv).pick_fastest()
+        list_fastest_laps.append(drvs_fastest_lap)
 
 
-        fastest_laps = Laps(list_fastest_laps).sort_values(by='LapTime').reset_index(drop=True)
+    best_laps = Laps(list_fastest_laps).sort_values(by='LapTime').reset_index(drop=True)
 
-        pole_lap = fastest_laps.pick_fastest()
-        pole_lap_time = datetime.datetime(1,1,1,0,0,0) + pole_lap['LapTime']
-
-
-        fastest_laps['LapTimeDelta'] = fastest_laps['LapTime'] - pole_lap['LapTime']
+    fastest_lap = best_laps.pick_fastest()
+    pole_lap_time = datetime.datetime(1,1,1,0,0,0) + fastest_lap['LapTime']
 
 
-        team_colors = list()
+    best_laps['LapTimeDelta'] = best_laps['LapTime'] - fastest_lap['LapTime']
 
-        for index, lap in fastest_laps.iterlaps():
+    best_laps = best_laps.dropna(subset=['LapTime'])
 
-            try:
-                color = ff1plt.team_color(lap['Team'])
-            except:
-                color = 'black'    
+    team_colors = list()
 
-            team_colors.append(color)
+    for index, lap in best_laps.iterlaps():
+
+        try:
+            color = ff1plt.team_color(lap['Team'])
+        except:
+            color = 'black'    
+
+        team_colors.append(color)
             
-        return pole_lap_time, pole_lap, fastest_laps, team_colors, session
+    return fastest_lap, best_laps, team_colors, session
+ 
+ 
+ 
 
-def plot_with_matplotlib(pole_lap_time, pole_lap, fastest_laps, team_colors, session):
-    fig, ax = plt.subplots()
-
-    ax.barh(fastest_laps.index, fastest_laps['LapTimeDelta'],
-            color=team_colors, edgecolor='grey')
-    ax.set_yticks(fastest_laps.index)
-    ax.set_yticklabels(fastest_laps['Driver'])
-
-    # Show fastest at the top
-    ax.invert_yaxis()
-
-    # Draw vertical lines behind the bars
-    ax.set_axisbelow(True)
-    ax.xaxis.grid(True, which='major', linestyle='--', color='black', zorder=-1000)
-
-    # Title for the plot
-    lap_time_string = pole_lap_time.strftime('%M:%S.%f')[:-3]
-    plt.suptitle(f"{session.event['EventName']} {session.event.year} Race\n"
-                 f"Fastest Lap: {lap_time_string} ({pole_lap['Driver']})")
-
-    plt.show()
-  
-def get_fastest_laps_fig():
-    pole_lap_time, pole_lap, fastest_laps, team_colors, session = get_fastest_laps()
-
+def get_fastest_laps_dataFrame(pole_lap_time, pole_lap, fastest_laps, team_colors, session):
+    
     lap_time_string = pole_lap_time.strftime('%M:%S.%f')[:-3]
 
     drivers = fastest_laps['Driver'].values
@@ -135,4 +113,4 @@ def get_fastest_laps_fig():
         showlegend=False  # Remove the legend
     )
 
-    return fig
+    return df, fig
