@@ -42,3 +42,7 @@ def get_best_laps_fig(_fastest_laps, team_colors):
 @st.cache_data
 def get_race_results(race_name, year):
     return LastRace.get_race_result(year, race_name)
+
+@st.cache_data
+def get_tyre_strategy(race_name, year):
+    return LastRace.tyre_strategy(year, race_name)

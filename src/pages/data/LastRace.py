@@ -120,3 +120,77 @@ def get_race_result(year, race_name):
     })
 
     return df
+
+def tyre_strategy(year, race_name):
+    # Get the race session
+    session = ff1.get_session(year, race_name, 'R')
+
+    # Load session results
+    session.load()
+
+    # Extract pit stop data
+    laps = session.laps
+    
+    # Define tire compound colors
+    compound_colors = {
+        'SOFT': 'red',
+        'MEDIUM': 'yellow',
+        'HARD': 'white',
+        'INTERMEDIATE': 'green',
+        'WET': 'blue',
+    }
+
+    # Extract unique drivers
+    drivers = laps['Driver'].unique()
+
+    driver_mapping = {driver: idx for idx, driver in enumerate(drivers)}
+
+    fig, ax = plt.subplots(figsize=(15, 10))
+
+    fig.patch.set_facecolor('black')
+    ax.set_facecolor('black')
+
+    # Plot tire compounds for each lap and each driver
+    for driver in drivers:
+        driver_laps = laps[laps['Driver'] == driver]
+        driver_idx = driver_mapping[driver]
+
+        # Initialize variables for tracking tire changes
+        prev_compound = None
+        prev_lap = None
+
+        for lap in driver_laps.itertuples():
+            compound = lap.Compound
+
+            # Plot a dot only if there's a tire change
+            if compound != prev_compound:
+                if prev_lap is not None:
+                    ax.plot([prev_lap, lap.LapNumber], [driver_idx, driver_idx], color=compound_colors.get(prev_compound, 'black'), linewidth=2)
+                ax.plot(lap.LapNumber, driver_idx, marker='o', color=compound_colors.get(compound, 'black'))
+                prev_lap = lap.LapNumber
+
+            prev_compound = compound
+
+        # If the race ended without a tire change, draw a line segment to the end of the race
+        if prev_lap is not None and prev_lap < len(driver_laps):
+            ax.plot([prev_lap, len(driver_laps)], [driver_idx, driver_idx], color=compound_colors.get(prev_compound, 'black'), linewidth=2)
+            ax.plot(len(driver_laps), driver_idx, marker='o', color=compound_colors.get(prev_compound, 'black'))
+
+    # Set labels and title
+    ax.set_xlabel('Lap Number', color='white')
+    ax.set_ylabel('Driver', color='white')
+    ax.set_title('Tire Compound Usage by Driver and Lap', color='white')
+    ax.grid(True, color='gray')
+    ax.set_yticks(list(driver_mapping.values()))
+    ax.set_yticklabels(list(driver_mapping.keys()), color='white')
+    ax.set_xticklabels(ax.get_xticks(), color='white')
+    ax.invert_yaxis()  # Invert y-axis to have the first driver on top
+
+    # Create a legend for tire compounds
+    handles = [plt.Line2D([0], [0], marker='o', color=color, linestyle='', label=compound)
+               for compound, color in compound_colors.items()]
+    legend = ax.legend(handles=handles, title='Tire Compounds', facecolor='black', edgecolor='white')
+    plt.setp(legend.get_texts(), color='white')
+    plt.setp(legend.get_title(), color='white')
+
+    return fig

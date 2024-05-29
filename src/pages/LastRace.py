@@ -11,6 +11,9 @@ st.set_page_config(page_title="Last Race", layout="wide")
 #Side bar
 st.sidebar.markdown("# Last Race")
 
+st.sidebar.markdown("[Result](#race-results)", unsafe_allow_html=True)
+st.sidebar.markdown("[Best Laps](#best-laps)", unsafe_allow_html=True)
+
 # Get Last Race
 race_name, year = cache.last_race()
 
@@ -39,21 +42,28 @@ with col3:
 result.index += 1
 st.table(result)
 
-fastLapCol, charCol = st.columns([1, 2])
+
+st.markdown(f"<div style='text-align: center;'> <h3> Best Laps </h3> </div>", unsafe_allow_html=True)
+
+fastLapCol, chartCol = st.columns([1, 2])
 
 #Display fastest Lap
 with fastLapCol:
     fastest_lap_time = datetime.datetime(1,1,1,0,0,0) + fastest_lap['LapTime']
-    st.markdown(f"<div style='text-align: center;'> <h2> Fastest Lap</h2> </div>", unsafe_allow_html=True)
+    fastLapCol.markdown(f"<div style='text-align: center;'> <h2> Fastest Lap</h2> </div>", unsafe_allow_html=True)
     
     fastest_driver_name = result[result['Abbreviation'] == fastest_lap['Driver']]['Name'].values[0]
-    st.image(image=cache.driver_profile_picture(fastest_driver_name))
+    fastLapCol.image(image=cache.driver_profile_picture(fastest_driver_name))
     
-    st.markdown(f"<h4 style='text-align: center;'> {fastest_lap_time.strftime('%M:%S.%f')[:-3]} by {fastest_lap['Driver']} {fastest_lap['DriverNumber']} </h4>", unsafe_allow_html=True)
+    fastLapCol.markdown(f"<h4 style='text-align: center;'> {fastest_lap_time.strftime('%M:%S.%f')[:-3]} by {fastest_lap['Driver']} {fastest_lap['DriverNumber']} </h4>", unsafe_allow_html=True)
     
-    
-
 #Display Best Laps
-with charCol:
+with chartCol:
     fig = cache.get_best_laps_fig(best_laps, team_colors)
-    st.plotly_chart(fig, use_container_width=True)
+    chartCol.plotly_chart(fig, use_container_width=True)
+    
+    
+st.markdown(f"<div style='text-align: center;'> <h3> Tyre Strategy </h3> </div>", unsafe_allow_html=True)
+
+# Display Tyre Strategy
+st.pyplot(cache.get_tyre_strategy(race_name, year), use_container_width=True)
