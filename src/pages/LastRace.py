@@ -13,6 +13,7 @@ st.sidebar.markdown("# Last Race")
 
 st.sidebar.markdown("[Result](#race-results)", unsafe_allow_html=True)
 st.sidebar.markdown("[Best Laps](#best-laps)", unsafe_allow_html=True)
+st.sidebar.markdown("[Tyre Strategy](#tyre-strategy)", unsafe_allow_html=True)
 
 # Get Last Race
 race_name, year = cache.last_race()

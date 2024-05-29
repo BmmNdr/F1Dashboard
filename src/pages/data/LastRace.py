@@ -192,5 +192,5 @@ def tyre_strategy(year, race_name):
     legend = ax.legend(handles=handles, title='Tire Compounds', facecolor='black', edgecolor='white')
     plt.setp(legend.get_texts(), color='white')
     plt.setp(legend.get_title(), color='white')
-
+    
     return fig

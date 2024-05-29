@@ -20,8 +20,8 @@ def next_race():
     return NextRace.get_next_race_info()
 
 @st.cache_data
-def driver_profile_picture(driver_name):
-    return ImagePicture.get_driver_profile_picture(driver_name)
+def driver_profile_picture(driver_name, year = None):
+    return ImagePicture.get_driver_profile_picture(driver_name, year)
 
 @st.cache_data
 def team_profile_picture(team):
