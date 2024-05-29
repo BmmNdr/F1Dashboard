@@ -29,12 +29,12 @@ colTeamStandings.header("Team Standings")
 with colDriverStandings:
     dfDriverStandingsIndex = pd.DataFrame(cache.driver_standings(), columns=['name', 'points'])
     dfDriverStandingsIndex.index += 1
-    st.table(dfDriverStandingsIndex)
+    colDriverStandings.table(dfDriverStandingsIndex)
     
 with colTeamStandings:
     dfTeamStandingsIndex = pd.DataFrame(cache.team_standings(), columns=['team'])
     dfTeamStandingsIndex.index += 1
-    st.table(dfTeamStandingsIndex)
+    colTeamStandings.table(dfTeamStandingsIndex)
     
 with colNextRace:
     race = cache.next_race()
@@ -91,13 +91,13 @@ with resultCol:
     result = cache.get_race_results(race_name, year).reset_index(drop=True)
     result.index += 1
 
-    st.table(pd.DataFrame(result, columns=['Name', 'Team']))
+    resultCol.table(pd.DataFrame(result, columns=['Name', 'Team']))
     
 with winnerCol:
     #Display Winner Image
     winner = result.iloc[0]['Name']
     
-    st.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(" ")[1]} </h1> </div>", unsafe_allow_html=True)
+    winnerCol.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(" ")[1]} </h1> </div>", unsafe_allow_html=True)
     
     winner_image = cache.driver_profile_picture(winner)
-    st.image(winner_image, use_column_width=True)
+    winnerCol.image(winner_image, use_column_width=True)

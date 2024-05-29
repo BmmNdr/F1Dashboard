@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 
 import pages.data.data_cache as cache
-import pages.data.ImagePicture as ImagePicture
-
 
 #page configs
 st.set_page_config(page_title="Constructors Standings", layout="wide")
