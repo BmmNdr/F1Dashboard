@@ -5,6 +5,7 @@ import fastf1.plotting as ff1plt
 from fastf1.core import Laps
 import requests
 import plotly.express as px
+import datetime
 
 
 def get_last_f1_race(year):
@@ -108,14 +109,14 @@ def get_race_result(year, race_name):
 
     # Load session results
     session.load()
-    
+
     df = pd.DataFrame({
         'Name': session.results["BroadcastName"],
         'Number': session.results["DriverNumber"],
         'Abbreviation': session.results["Abbreviation"],
         'Team': session.results['TeamName'],
         'Grid Position': session.results['GridPosition'].astype(int),
-        'Finish Status': session.results['Status']
+        'Time': [(datetime.datetime(1,1,1,0,0,0) + time).strftime("%H:%M:%S:%f") if status == 'Finished' else status for time, status in zip(session.results['Time'], session.results['Status'])]
     })
 
     return df

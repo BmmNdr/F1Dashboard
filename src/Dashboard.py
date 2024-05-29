@@ -1,4 +1,4 @@
-#streamlit run src/index.py
+#streamlit run src/Dashboard.py
 
 import streamlit as st
 from streamlit_autorefresh import st_autorefresh
@@ -77,3 +77,27 @@ with colNextRace:
                     </div>
                     </div>
     """, unsafe_allow_html=True)
+    
+
+
+#Display Last Race Result
+st.markdown("<div style='text-align: center;'> <h1> Last Race Results </h1> </div>", unsafe_allow_html=True)
+
+resultCol, winnerCol = st.columns([2, 1])
+
+with resultCol:
+    # Display Race Results
+    race_name, year = cache.last_race()
+    result = cache.get_race_results(race_name, year).reset_index(drop=True)
+    result.index += 1
+
+    st.table(pd.DataFrame(result, columns=['Name', 'Team']))
+    
+with winnerCol:
+    #Display Winner Image
+    winner = result.iloc[0]['Name']
+    
+    st.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(" ")[1]} </h1> </div>", unsafe_allow_html=True)
+    
+    winner_image = cache.driver_profile_picture(winner)
+    st.image(winner_image, use_column_width=True)
