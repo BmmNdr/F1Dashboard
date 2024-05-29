@@ -39,7 +39,6 @@ def get_last_f1_race(year):
 
 def get_fastest_laps(year, race_name):
 
-    
     session = ff1.get_session(year, race_name, 'R')
     session.load()
 
@@ -77,9 +76,7 @@ def get_fastest_laps(year, race_name):
  
  
 
-def get_fastest_laps_dataFrame(pole_lap_time, pole_lap, fastest_laps, team_colors, session):
-    
-    lap_time_string = pole_lap_time.strftime('%M:%S.%f')[:-3]
+def get_fastest_laps_fig(fastest_laps, team_colors):
 
     drivers = fastest_laps['Driver'].values
     lap_times = fastest_laps['LapTimeDelta'].values
@@ -105,12 +102,8 @@ def get_fastest_laps_dataFrame(pole_lap_time, pole_lap, fastest_laps, team_color
         xaxis={'range': [df['DeltaTime'].min() - 0.5, df['DeltaTime'].max() + 0.5]},  # Set the x-axis range
         yaxis_title='Driver',  # Set the y-axis title
         xaxis_title='DeltaTime',  # Set the x-axis title
-        title={
-            'text': f"{session.session_info['Meeting']['Name']}\n\nFastest Lap: {lap_time_string} ({pole_lap['Driver']})",
-            'x': 0.5,  # Center the title horizontally
-            'y': 0.95  # Position the title near the top of the plot
-        },
+        title="Best Laps Delta Time",  # Set the title of the plot
         showlegend=False  # Remove the legend
     )
 
-    return df, fig
+    return fig

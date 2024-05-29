@@ -4,7 +4,7 @@ import datetime
 import pages.data.NextRace as NextRace
 import pages.data.Standings as Standings
 import pages.data.ImagePicture as ImagePicture
-import pages.data.BestLaps as BestLaps
+import pages.data.LastRace as LastRace
 
 #chached data
 @st.cache_data(ttl="2d")
@@ -29,8 +29,12 @@ def team_profile_picture(team):
 
 @st.cache_data(ttl="2d")
 def last_race():
-    return BestLaps.get_last_f1_race(datetime.datetime.now().year)
+    return LastRace.get_last_f1_race(datetime.datetime.now().year)
 
 @st.cache_data
 def get_fastest_laps(race_name, year):
-    return BestLaps.get_fastest_laps(year, race_name)
+    return LastRace.get_fastest_laps(year, race_name)
+
+@st.cache_data
+def get_best_laps_fig(_fastest_laps, team_colors):
+    return LastRace.get_fastest_laps_fig(_fastest_laps, team_colors)
