@@ -3,7 +3,6 @@ import pandas as pd
 import fastf1 as ff1
 import fastf1.plotting as ff1plt
 from fastf1.core import Laps
-import datetime
 import requests
 import plotly.express as px
 
@@ -53,8 +52,6 @@ def get_fastest_laps(year, race_name):
     best_laps = Laps(list_fastest_laps).sort_values(by='LapTime').reset_index(drop=True)
 
     fastest_lap = best_laps.pick_fastest()
-    pole_lap_time = datetime.datetime(1,1,1,0,0,0) + fastest_lap['LapTime']
-
 
     best_laps['LapTimeDelta'] = best_laps['LapTime'] - fastest_lap['LapTime']
 
@@ -73,9 +70,6 @@ def get_fastest_laps(year, race_name):
             
     return fastest_lap, best_laps, team_colors, session
  
- 
- 
-
 def get_fastest_laps_fig(fastest_laps, team_colors):
 
     drivers = fastest_laps['Driver'].values
@@ -107,3 +101,21 @@ def get_fastest_laps_fig(fastest_laps, team_colors):
     )
 
     return fig
+
+def get_race_result(year, race_name):
+    # Get the race session
+    session = ff1.get_session(year, race_name, 'R')
+
+    # Load session results
+    session.load()
+    
+    df = pd.DataFrame({
+        'Name': session.results["BroadcastName"],
+        'Number': session.results["DriverNumber"],
+        'Abbreviation': session.results["Abbreviation"],
+        'Team': session.results['TeamName'],
+        'Grid Position': session.results['GridPosition'].astype(int),
+        'Finish Status': session.results['Status']
+    })
+
+    return df
