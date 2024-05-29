@@ -97,7 +97,7 @@ with winnerCol:
     #Display Winner Image
     winner = result.iloc[0]['Name']
     
-    winnerCol.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(" ")[1]} </h1> </div>", unsafe_allow_html=True)
+    winnerCol.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(' ')[1]} </h1> </div>", unsafe_allow_html=True)
     
     winner_image = cache.driver_profile_picture(winner)
     winnerCol.image(winner_image, use_column_width=True)
