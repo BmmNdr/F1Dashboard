@@ -23,7 +23,7 @@ if race_name is None or year is None:
     st.text("No Race Selected")
 else:
         try:
-            #Get Race Best Laps
+            #Get Race Drivers Best Laps
             fastest_lap, best_laps, team_colors, session = cache.get_fastest_laps(race_name, year)
             st.markdown(f"<div style='text-align: center;'> <h1> {session} </h1> </div>", unsafe_allow_html=True)
         except Exception as e:
