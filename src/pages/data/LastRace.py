@@ -115,7 +115,7 @@ def get_race_result(year, race_name):
         'Number': session.results["DriverNumber"],
         'Abbreviation': session.results["Abbreviation"],
         'Team': session.results['TeamName'],
-        'Grid Position': session.results['GridPosition'].astype(int),
+        'Grid Position': [str(position).split('.')[0] for position in session.results['GridPosition']],
         'Time': [(datetime.datetime(1,1,1,0,0,0) + time).strftime("%H:%M:%S:%f") if status == 'Finished' else status for time, status in zip(session.results['Time'], session.results['Status'])]
     })
 
