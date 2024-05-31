@@ -4,7 +4,6 @@ from PIL import Image
 import datetime
 
 def get_driver_profile_picture(driver_name, year = None, stop = False):
-    
     if year is None:
         year = datetime.datetime.now().year
         
@@ -30,8 +29,6 @@ def get_driver_profile_picture(driver_name, year = None, stop = False):
         return get_driver_profile_picture(driver_name, year - 1, True)
     else:
         return None
-    
-    
     
 team_name = {
     "Red Bull Racing Honda RBPT": "red-bull-racing",

@@ -51,9 +51,6 @@ with colNextRace:
         race = cache.next_race()
         
         colNextRace.header("Next Race: " + race['name'])
-        
-        # Use st_autorefresh to refresh the countdown every 10 seconds
-        countdown_autorefresh = st_autorefresh(interval=1000, key="countdown_refresh")
 
         countdown = NextRace.countdown_to_next(race['date'], race['time'])
         countdown_text = f"{countdown['days']} days, {countdown['hours']} hours, {countdown['minutes']} minutes, {countdown['seconds']} seconds"
@@ -123,3 +120,6 @@ try:
 except Exception as e:
     st.text("Error loading Last Race Results")
     print(e)
+    
+# Use st_autorefresh to refresh the countdown every 10 seconds
+countdown_autorefresh = st_autorefresh(interval=1000, key="countdown_refresh")

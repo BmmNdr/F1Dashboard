@@ -6,7 +6,13 @@ from fastf1.core import Laps
 import requests
 import plotly.express as px
 import datetime
+import matplotlib as mpl
+import numpy as np
+from matplotlib.collections import LineCollection
+import re
 
+def rreplace(s, old, new):
+    return (s[::-1].replace(old[::-1],new[::-1], 1))[::-1]
 
 def get_last_f1_race(year):
     url = f"https://api.openf1.org/v1/sessions?session_name=Race&year={year}"
@@ -52,7 +58,11 @@ def get_fastest_laps(year, race_name):
 
     best_laps = Laps(list_fastest_laps).sort_values(by='LapTime').reset_index(drop=True)
 
-    fastest_lap = best_laps.pick_fastest()
+    lap = best_laps.pick_fastest()
+    
+    driver = lap['Driver']
+    
+    fastest_lap = session.laps.pick_driver(driver).pick_fastest()
 
     best_laps['LapTimeDelta'] = best_laps['LapTime'] - fastest_lap['LapTime']
 
@@ -70,7 +80,51 @@ def get_fastest_laps(year, race_name):
         team_colors.append(color)
             
     return fastest_lap, best_laps, team_colors, session
- 
+
+def get_fastest_lap_heatmap(fastest_lap):
+    colormap = mpl.cm.plasma
+    
+    # Get telemetry data
+    x = fastest_lap.telemetry['X']              # values for x-axis
+    y = fastest_lap.telemetry['Y']              # values for y-axis
+    color = fastest_lap.telemetry['Speed']      # value to base color gradient on
+    
+    points = np.array([x, y]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([points[:-1], points[1:]], axis=1)
+    
+    # We create a plot with title and adjust some setting to make it look good.
+    fig, ax = plt.subplots(sharex=True, sharey=True, figsize=(12, 6.75))
+
+    # Adjust margins and turn of axis
+    plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.12)
+    ax.axis('off')
+
+    # After this, we plot the data itself.
+    # Create background track line
+    ax.plot(fastest_lap.telemetry['X'], fastest_lap.telemetry['Y'],
+            color='black', linestyle='-', linewidth=16, zorder=0)
+
+    # Create a continuous norm to map from data points to colors
+    norm = plt.Normalize(color.min(), color.max())
+    lc = LineCollection(segments, cmap=colormap, norm=norm,
+                        linestyle='-', linewidth=5)
+
+    # Set the values used for colormapping
+    lc.set_array(color)
+
+    # Merge all line segments together
+    line = ax.add_collection(lc)
+
+
+    # Finally, we create a color bar as a legend.
+    cbaxes = fig.add_axes([0.25, 0.05, 0.5, 0.05])
+    normlegend = mpl.colors.Normalize(vmin=color.min(), vmax=color.max())
+    legend = mpl.colorbar.ColorbarBase(cbaxes, norm=normlegend, cmap=colormap,
+                                    orientation="horizontal")
+
+    # Show the plot
+    return fig
+
 def get_fastest_laps_fig(fastest_laps, team_colors):
 
     drivers = fastest_laps['Driver'].values
@@ -109,6 +163,34 @@ def get_race_result(year, race_name):
 
     # Load session results
     session.load()
+    
+    # Modify and format the Time
+    modified_time = []
+    for time, status in zip(session.results['Time'], session.results['Status']):
+        if status == 'Finished':
+                        
+            dt = (datetime.datetime(1,1,1,0,0,0) + time)
+        
+            if(modified_time != []):
+                # Extract components
+                hour = dt.hour
+                minute = dt.minute
+                second = dt.second
+                
+                # Calculate total seconds
+                total_seconds = hour * 3600 + minute * 60 + second
+                milliseconds = dt.microsecond // 1000  # Convert microseconds to milliseconds
+
+                # Format the string
+                formatted_time = f"{total_seconds}.{milliseconds:03}"
+                
+                modified_time.append("+" + formatted_time)
+            else:
+             formatted_time = dt.strftime("%H:%M:%S:%f").lstrip("0").lstrip(":").rstrip("0").rstrip(":")
+             modified_time.append(rreplace(formatted_time, ":", "."))
+             
+        else:
+            modified_time.append(status)
 
     df = pd.DataFrame({
         'Name': session.results["BroadcastName"],
@@ -116,7 +198,7 @@ def get_race_result(year, race_name):
         'Abbreviation': session.results["Abbreviation"],
         'Team': session.results['TeamName'],
         'Grid Position': [str(position).split('.')[0] for position in session.results['GridPosition']],
-        'Time': [(datetime.datetime(1,1,1,0,0,0) + time).strftime("%H:%M:%S:%f") if status == 'Finished' else status for time, status in zip(session.results['Time'], session.results['Status'])]
+        'Time': modified_time
     })
 
     return df

@@ -71,19 +71,21 @@ else:
         try:
             st.markdown(f"<div style='text-align: center;'> <h3> Best Laps </h3> </div>", unsafe_allow_html=True)
 
-            fastLapCol, chartCol = st.columns([1, 2])
+            fastLapCol, chartCol = st.columns([1, 1])
 
             #Display fastest Lap
             with fastLapCol:
                 fastest_lap_time = datetime.datetime(1,1,1,0,0,0) + fastest_lap['LapTime']
                 fastLapCol.markdown(f"<div style='text-align: center;'> <h2> Fastest Lap</h2> </div>", unsafe_allow_html=True)
                 
-                fastest_driver_name = result[result['Abbreviation'] == fastest_lap['Driver']]['Name'].values[0]
+                #fastest_driver_name = result[result['Abbreviation'] == fastest_lap['Driver']]['Name'].values[0]
                 
-                try:
-                    fastLapCol.image(image=cache.driver_profile_picture(fastest_driver_name, year))
-                except Exception as e:
-                    print(e)
+                #try:
+                #    fastLapCol.image(image=cache.driver_profile_picture(fastest_driver_name, year))
+                #except Exception as e:
+                #    print(e)
+                
+                fastLapCol.pyplot(cache.fastest_lap_heatmap(fastest_lap), use_container_width=True)
                 
                 fastLapCol.markdown(f"<h4 style='text-align: center;'> {fastest_lap_time.strftime('%M:%S.%f')[:-3]} by {fastest_lap['Driver']} {fastest_lap['DriverNumber']} </h4>", unsafe_allow_html=True)
                 
