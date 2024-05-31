@@ -23,60 +23,74 @@ st.markdown(css, unsafe_allow_html=True)
 #page content
 colDriverStandings, colTeamStandings, colNextRace = st.columns([1, 1, 2], gap="large")
 
-colDriverStandings.header("Driver Standings")
-colTeamStandings.header("Team Standings")
-
 with colDriverStandings:
-    dfDriverStandingsIndex = pd.DataFrame(cache.driver_standings(), columns=['name', 'points'])
-    dfDriverStandingsIndex.index += 1
-    colDriverStandings.table(dfDriverStandingsIndex)
+    colDriverStandings.header("Driver Standings")
+    
+    try:
+        dfDriverStandingsIndex = pd.DataFrame(cache.driver_standings(), columns=['name', 'points'])
+        dfDriverStandingsIndex.index += 1
+        colDriverStandings.table(dfDriverStandingsIndex)
+    except Exception as e:
+        st.text("Error loading Driver Standings")
+        print(e)
     
 with colTeamStandings:
-    dfTeamStandingsIndex = pd.DataFrame(cache.team_standings(), columns=['team'])
-    dfTeamStandingsIndex.index += 1
-    colTeamStandings.table(dfTeamStandingsIndex)
+    colTeamStandings.header("Team Standings")
+    
+    try:
+        dfTeamStandingsIndex = pd.DataFrame(cache.team_standings(), columns=['team'])
+        dfTeamStandingsIndex.index += 1
+        colTeamStandings.table(dfTeamStandingsIndex)
+    except Exception as e:
+        st.text("Error loading Team Standings")
+        print(e)
     
 with colNextRace:
-    race = cache.next_race()
     
-    colNextRace.header("Next Race: " + race['name'])
-    
-    # Use st_autorefresh to refresh the countdown every 10 seconds
-    countdown_autorefresh = st_autorefresh(interval=1000, key="countdown_refresh")
+    try:
+        race = cache.next_race()
+        
+        colNextRace.header("Next Race: " + race['name'])
+        
+        # Use st_autorefresh to refresh the countdown every 10 seconds
+        countdown_autorefresh = st_autorefresh(interval=1000, key="countdown_refresh")
 
-    countdown = NextRace.countdown_to_next(race['date'], race['time'])
-    countdown_text = f"{countdown['days']} days, {countdown['hours']} hours, {countdown['minutes']} minutes, {countdown['seconds']} seconds"
-    
-    colNextRace.image("src/images/layouts/" + race['location'] + ".png")
-    
-    # Display the countdown in the same way as the Formula 1 official site
-    colNextRace.markdown(f"""
-                         <div class="centered-content">
-        <div id="countdown-clock-wrapper">
-                        <div id="countdown-clock">
-                            <div id="title-bar">{race['location']} Race</div>
-                            <div id="clock">
-                                <div id="time">
-                                    <p id="text">{countdown['days']}</p>
-                                    <span id="f1-uppercase">days</span>
-                                </div>
-                                <div id="time">
-                                    <p id="text">{countdown['hours']}</p>
-                                    <span id="f1-uppercase">hrs</span>
-                                </div>
-                                <div id="time">
-                                    <p id="text">{countdown['minutes']}</p>
-                                    <span id="f1-uppercase">mins</span>
-                                </div>
-                                <div id="time">
-                                    <p id="text">{countdown['seconds']}</p>
-                                    <span id="f1-uppercase">secs</span>
+        countdown = NextRace.countdown_to_next(race['date'], race['time'])
+        countdown_text = f"{countdown['days']} days, {countdown['hours']} hours, {countdown['minutes']} minutes, {countdown['seconds']} seconds"
+        
+        colNextRace.image("src/images/layouts/" + race['location'] + ".png")
+        
+        # Display the countdown in the same way as the Formula 1 official site
+        colNextRace.markdown(f"""
+                            <div class="centered-content">
+            <div id="countdown-clock-wrapper">
+                            <div id="countdown-clock">
+                                <div id="title-bar">{race['location']} Race</div>
+                                <div id="clock">
+                                    <div id="time">
+                                        <p id="text">{countdown['days']}</p>
+                                        <span id="f1-uppercase">days</span>
+                                    </div>
+                                    <div id="time">
+                                        <p id="text">{countdown['hours']}</p>
+                                        <span id="f1-uppercase">hrs</span>
+                                    </div>
+                                    <div id="time">
+                                        <p id="text">{countdown['minutes']}</p>
+                                        <span id="f1-uppercase">mins</span>
+                                    </div>
+                                    <div id="time">
+                                        <p id="text">{countdown['seconds']}</p>
+                                        <span id="f1-uppercase">secs</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    </div>
-    """, unsafe_allow_html=True)
+                        </div>
+        """, unsafe_allow_html=True)
+    except Exception as e:
+        st.text("Error loading Next Race")
+        print(e)
     
 
 
@@ -85,19 +99,27 @@ st.markdown("<div style='text-align: center;'> <h1> Last Race Results </h1> </di
 
 resultCol, winnerCol = st.columns([2, 1])
 
-with resultCol:
-    # Display Race Results
-    race_name, year = cache.last_race()
-    result = cache.get_race_results(race_name, year).reset_index(drop=True)
-    result.index += 1
+try:
+    with resultCol:
+        # Display Race Results
+        race_name, year = cache.last_race()
+        result = cache.get_race_results(race_name, year).reset_index(drop=True)
+        result.index += 1
 
-    resultCol.table(pd.DataFrame(result, columns=['Name', 'Team']))
-    
-with winnerCol:
-    #Display Winner Image
-    winner = result.iloc[0]['Name']
-    
-    winnerCol.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(' ')[1]} </h1> </div>", unsafe_allow_html=True)
-    
-    winner_image = cache.driver_profile_picture(winner)
-    winnerCol.image(winner_image, use_column_width=True)
+        resultCol.table(pd.DataFrame(result, columns=['Name', 'Team']))
+        
+    with winnerCol:
+        #Display Winner Image
+        winner = result.iloc[0]['Name']
+        
+        winnerCol.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(' ')[1]} </h1> </div>", unsafe_allow_html=True)
+        
+        try:
+            winner_image = cache.driver_profile_picture(winner)
+            winnerCol.image(winner_image, use_column_width=True)
+        except Exception as e:
+            print(e)
+            
+except Exception as e:
+    st.text("Error loading Last Race Results")
+    print(e)

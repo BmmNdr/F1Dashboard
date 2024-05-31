@@ -28,7 +28,7 @@ else:
             st.markdown(f"<div style='text-align: center;'> <h1> {session} </h1> </div>", unsafe_allow_html=True)
         except Exception as e:
             print(e)
-            st.text("Session not found")
+            st.markdown(f"<div style='text-align: center;'> <h1> {race_name} {year} </h1> </div>", unsafe_allow_html=True)
 
         try:
             # Display Race Results
