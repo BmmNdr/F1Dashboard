@@ -6,7 +6,7 @@ import pages.data.Standings as Standings
 import pages.data.ImagePicture as ImagePicture
 import pages.data.LastRace as LastRace
 
-#chached data
+#cached datas
 @st.cache_data(ttl="2d")
 def driver_standings():
     return Standings.get_driver_standings()
