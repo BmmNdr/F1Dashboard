@@ -19,11 +19,11 @@ def team_standings():
 def next_race():
     return NextRace.get_next_race_info()
 
-@st.cache_data
+@st.cache_data(persist=True)
 def driver_profile_picture(driver_name, year = None):
     return ImagePicture.get_driver_profile_picture(driver_name, year)
 
-@st.cache_data
+@st.cache_data(persist=True)
 def team_profile_picture(team):
     return ImagePicture.get_team_profile_picture(team)
 
@@ -31,18 +31,19 @@ def team_profile_picture(team):
 def last_race():
     return LastRace.get_last_f1_race(datetime.datetime.now().year)
 
-@st.cache_data
+@st.cache_data(persist=True)
 def get_fastest_laps(race_name, year):
     return LastRace.get_fastest_laps(year, race_name)
 
-@st.cache_data
+@st.cache_data(persist=True)
 def get_best_laps_fig(_fastest_laps, team_colors):
     return LastRace.get_fastest_laps_fig(_fastest_laps, team_colors)
 
+@st.cache_data(persist=True)
 def get_race_results(race_name, year):
     return LastRace.get_race_result(year, race_name)
 
-@st.cache_data
+@st.cache_data(persist=True)
 def get_tyre_strategy(race_name, year):
     return LastRace.tyre_strategy(year, race_name)
 
