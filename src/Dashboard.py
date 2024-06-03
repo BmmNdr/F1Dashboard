@@ -100,14 +100,17 @@ try:
     with resultCol:
         # Display Race Results
         race_name, year = cache.last_race()
-        result = cache.get_race_results(race_name, year).reset_index(drop=True)
-        result.index += 1
+        
+        last_race = cache.get_Race(race_name, year)
+        
+        #result = cache.get_race_results(race_name, year).reset_index(drop=True)
+        #result.index += 1
 
-        resultCol.table(pd.DataFrame(result, columns=['Name', 'Team']))
+        resultCol.table(pd.DataFrame(last_race.results, columns=['Name', 'Team']))
         
     with winnerCol:
         #Display Winner Image
-        winner = result.iloc[0]['Name']
+        winner = last_race.results.iloc[0]['Name']
         
         winnerCol.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(' ')[1]} </h1> </div>", unsafe_allow_html=True)
         
@@ -122,4 +125,4 @@ except Exception as e:
     print(e)
     
 # Use st_autorefresh to refresh the countdown every 10 seconds
-countdown_autorefresh = st_autorefresh(interval=1000, key="countdown_refresh")
+#countdown_autorefresh = st_autorefresh(interval=1000, key="countdown_refresh")

@@ -6,6 +6,8 @@ import pages.data.Standings as Standings
 import pages.data.ImagePicture as ImagePicture
 import pages.data.LastRace as LastRace
 
+from pages.data.CRace import Race
+
 #cached datas
 @st.cache_data(ttl="2d")
 def driver_standings():
@@ -49,3 +51,8 @@ def get_tyre_strategy(race_name, year):
 
 def fastest_lap_heatmap(_fastest_lap):
     return LastRace.get_fastest_lap_heatmap(_fastest_lap)
+
+
+@st.cache_data(persist=True)
+def get_Race(race_name, race_year):
+    return Race(race_name, race_year)
