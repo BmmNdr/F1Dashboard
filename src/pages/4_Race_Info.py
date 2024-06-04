@@ -8,6 +8,7 @@ import pages.data.Cache as Cache
 
 #Page Configs
 st.set_page_config(page_title="Last Race", layout="wide")
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 #Side Bar Settings
 st.sidebar.markdown("# Race Info")
@@ -25,7 +26,7 @@ race = Cache.get_Race(race_name, year)
 
 #Page Content
 if race is None:
-    st.text("No Race Selected")
+    st.text("No Race Found")
 else:
         try: #Some times the session is not available
             st.markdown(f"<div style='text-align: center;'> <h1> {race.session} </h1> </div>", unsafe_allow_html=True)

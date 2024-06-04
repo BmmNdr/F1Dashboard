@@ -15,16 +15,21 @@ class Race:
         self.year = race_year
         self.session = ff1.get_session(self.year, self.name, 'R')
         
-        self.fastest_lap, self.best_laps, self.team_colors = self.get_best_laps()
+        try:
+            self.fastest_lap, self.best_laps, self.team_colors = self.get_best_laps()
+            self.heatmap = self.fastest_lap_heatmap()
+            self.fig = self.best_lap_fig()
+            self.tyre_strategy = self.get_tyre_strategy()
+        except:
+            self.fastest_lap = None
+            self.best_laps = None
+            self.team_colors = None
+            self.tyre_strategy = None
+            self.heatmap = None
+            self.fig = None
          
         self.results = self.get_results().reset_index(drop=True)
         self.results.index += 1
-        
-        self.heatmap = self.fastest_lap_heatmap()
-        
-        self.fig = self.best_lap_fig()
-        
-        self.tyre_strategy = self.get_tyre_strategy()
         
     def get_best_laps(self):
         self.session.load()
@@ -170,7 +175,7 @@ class Race:
                 modified_time.append(status)
 
         df = pd.DataFrame({
-            'Name': self.session.results["BroadcastName"],
+            'Name': self.session.results["FirstName"] + " " + self.session.results["LastName"],
             'Number': self.session.results["DriverNumber"],
             'Abbreviation': self.session.results["Abbreviation"],
             'Team': self.session.results['TeamName'],

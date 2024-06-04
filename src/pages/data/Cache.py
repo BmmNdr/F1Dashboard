@@ -36,5 +36,6 @@ def get_Race(race_name, race_year):
     try:
         return Race(race_name, race_year)
     except Exception as e:
+        print("Get Race Error")
         print(e)
         return None
