@@ -6,8 +6,8 @@ import streamlit as st
 from streamlit_autorefresh import st_autorefresh
 import pandas as pd
 
-import pages.data.data_cache as cache
-import pages.data.NextRace as NextRace
+import pages.data.Cache as Cache
+import pages.data.RaceUtility as RaceUtility
 
 #Page Configuration
 st.set_page_config(page_title="My F1 Dashboard", page_icon="🏎️", layout="wide")
@@ -31,7 +31,7 @@ with colDriverStandings:
     
     try:
         #Gets the Driver Standings and displays it in a table
-        dfDriverStandingsIndex = pd.DataFrame(cache.driver_standings(), columns=['name', 'points'])
+        dfDriverStandingsIndex = pd.DataFrame(Cache.driver_standings(), columns=['name', 'points'])
         dfDriverStandingsIndex.index += 1
         colDriverStandings.table(dfDriverStandingsIndex)
     except Exception as e:
@@ -43,7 +43,7 @@ with colTeamStandings:
     
     try:
         #Gets the Team Standings and displays it in a table
-        dfTeamStandingsIndex = pd.DataFrame(cache.team_standings(), columns=['team'])
+        dfTeamStandingsIndex = pd.DataFrame(Cache.team_standings(), columns=['team'])
         dfTeamStandingsIndex.index += 1
         colTeamStandings.table(dfTeamStandingsIndex)
     except Exception as e:
@@ -54,12 +54,12 @@ with colNextRace:
     
     try:
         #Gets the Next Race Event
-        race = cache.next_race()
+        race = Cache.next_race()
         
         colNextRace.header("Next Race: " + race['name'])
 
         #Displays the countdown to the next race
-        countdown = NextRace.countdown_to_next(race['date'], race['time'])
+        countdown = RaceUtility.countdown_to_next(race['date'], race['time'])
         countdown_text = f"{countdown['days']} days, {countdown['hours']} hours, {countdown['minutes']} minutes, {countdown['seconds']} seconds"
         
         #Shows the track layout image
@@ -108,10 +108,10 @@ resultCol, winnerCol = st.columns([2, 1])
 
 try:
     with resultCol:
-        race_name, year = cache.last_race()
+        race_name, year = Cache.last_race()
         
         #Creates a Race Object
-        last_race = cache.get_Race(race_name, year)
+        last_race = Cache.get_Race(race_name, year)
 
         resultCol.table(pd.DataFrame(last_race.results, columns=['Name', 'Team']))
         
@@ -122,7 +122,7 @@ try:
         winnerCol.markdown(f"<div style='text-align: center;'> <h1> The Winner is {winner.split(' ')[1]} </h1> </div>", unsafe_allow_html=True)
         
         try:
-            winner_image = cache.driver_profile_picture(winner)
+            winner_image = Cache.driver_profile_picture(winner)
             winnerCol.image(winner_image, use_column_width=True)
         except Exception as e:
             print(e)

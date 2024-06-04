@@ -1,10 +1,9 @@
 #Displays the last race information (Results, Best Laps, Tyre Strategy...)
 
 import streamlit as st
-import pandas as pd
 import datetime
 
-import pages.data.data_cache as cache
+import pages.data.Cache as Cache
 
 #Page Configs
 st.set_page_config(page_title="Last Race", layout="wide")
@@ -21,8 +20,8 @@ st.sidebar.markdown("[Tyre Strategy](#tyre-strategy)", unsafe_allow_html=True)
 #Page Content
 
 #Creates the Race object
-race_name, year = cache.last_race()
-race = cache.get_Race(race_name, year)
+race_name, year = Cache.last_race()
+race = Cache.get_Race(race_name, year)
 
 #Diplay Race (session) Name
 st.markdown(f"<div style='text-align: center;'> <h1> {race.session} </h1> </div>", unsafe_allow_html=True)
@@ -37,7 +36,7 @@ try:
 
     with SecondPlaceCol:
         try:
-            SecondPlaceCol.image(image=cache.driver_profile_picture(race.results.iloc[1]['Name']), width=100, use_column_width=True)
+            SecondPlaceCol.image(image=Cache.driver_profile_picture(race.results.iloc[1]['Name']), width=100, use_column_width=True)
         except Exception as e:
             print(e)
         
@@ -45,7 +44,7 @@ try:
         
     with FirstPlaceCol:
         try:
-            FirstPlaceCol.image(image=cache.driver_profile_picture(race.results.iloc[0]['Name']), width=100, use_column_width=True)
+            FirstPlaceCol.image(image=Cache.driver_profile_picture(race.results.iloc[0]['Name']), width=100, use_column_width=True)
         except Exception as e:
             print(e)
             
@@ -53,7 +52,7 @@ try:
         
     with ThirdPlaceCol:
         try:
-            ThirdPlaceCol.image(image=cache.driver_profile_picture(race.results.iloc[2]['Name']), width=100, use_column_width=True)
+            ThirdPlaceCol.image(image=Cache.driver_profile_picture(race.results.iloc[2]['Name']), width=100, use_column_width=True)
         except Exception as e:
             print(e)
         
@@ -82,9 +81,13 @@ try:
             fastLapCol.pyplot(race.heatmap, use_container_width=True)
         except Exception as e:
             print(e)
-            fastest_driver_name = race.results[race.results['Abbreviation'] == race.fastest_lap['Driver']]['Name'].values[0]
-            fastLapCol.image(image=cache.driver_profile_picture(fastest_driver_name))
-        
+            
+            try:
+                fastest_driver_name = race.results[race.results['Abbreviation'] == race.fastest_lap['Driver']]['Name'].values[0]
+                fastLapCol.image(image=Cache.driver_profile_picture(fastest_driver_name))
+            except Exception as e:
+                print(e)
+            
         fastLapCol.markdown(f"<h4 style='text-align: center;'> {fastest_lap_time.strftime('%M:%S.%f')[:-3]} by {race.fastest_lap['Driver']} {race.fastest_lap['DriverNumber']} </h4>", unsafe_allow_html=True)
         
         

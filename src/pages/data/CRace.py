@@ -3,13 +3,11 @@ import pandas as pd
 import fastf1 as ff1
 import fastf1.plotting as ff1plt
 from fastf1.core import Laps
-import requests
 import plotly.express as px
 import datetime
 import matplotlib as mpl
 import numpy as np
 from matplotlib.collections import LineCollection
-import re
 
 class Race:   
     def __init__(self, race_name, race_year):

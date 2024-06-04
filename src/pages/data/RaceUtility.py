@@ -1,7 +1,36 @@
+import requests
 import fastf1
 import datetime
-import numpy as np
 
+def get_last_f1_race(year):
+    url = f"https://api.openf1.org/v1/sessions?session_name=Race&year={year}"
+    
+    try:
+        response = requests.get(url)
+        data = response.json()
+        
+        if response.status_code == 200:
+            if data:
+                last_race = data[-1]  # Assuming the last item in the list is the latest race
+                meeting_key = last_race.get("meeting_key")
+                
+                url = f"https://api.openf1.org/v1/meetings?meeting_key={meeting_key}"
+                data = requests.get(url).json()
+                
+                race_name = data[0]['meeting_name']
+                
+                if race_name:
+                    return race_name, year
+                else:
+                    return get_last_f1_race(year - 1)
+            else:
+                return get_last_f1_race(year - 1)
+        else:
+            return None
+    
+    except requests.exceptions.RequestException as e:
+        return None
+    
 def get_next_race_info(year = None):
     # Get the current season's schedule
     

@@ -3,7 +3,7 @@
 import streamlit as st
 import pandas as pd
 
-import pages.data.data_cache as cache
+import pages.data.Cache as Cache
 
 #Page Configs
 st.set_page_config(page_title="Driver Standings", layout="wide")
@@ -19,12 +19,12 @@ SecondPlaceCol, FirstPlaceCol, ThirdPlaceCol = st.columns([1, 1, 1])
 
 try:
     #Gets the driver standings and displays the first three drivers
-    dfDriverStandings = pd.DataFrame(cache.driver_standings(), columns=['name', 'team', 'points'])
+    dfDriverStandings = pd.DataFrame(Cache.driver_standings(), columns=['name', 'team', 'points'])
     dfDriverStandings.index += 1
 
     with SecondPlaceCol:
         try:
-            SecondPlaceCol.image(image=cache.driver_profile_picture(dfDriverStandings.iloc[1]['name']), width=250, use_column_width=True)
+            SecondPlaceCol.image(image=Cache.driver_profile_picture(dfDriverStandings.iloc[1]['name']), width=250, use_column_width=True)
         except Exception as e:
             print(e)
         
@@ -33,7 +33,7 @@ try:
         
     with FirstPlaceCol:
         try:
-            FirstPlaceCol.image(image=cache.driver_profile_picture(dfDriverStandings.iloc[0]['name']), width=250, use_column_width=True)
+            FirstPlaceCol.image(image=Cache.driver_profile_picture(dfDriverStandings.iloc[0]['name']), width=250, use_column_width=True)
         except Exception as e:
             print(e)
         
@@ -42,7 +42,7 @@ try:
         
     with ThirdPlaceCol:
         try:
-            ThirdPlaceCol.image(image=cache.driver_profile_picture(dfDriverStandings.iloc[2]['name']), width=250, use_column_width=True)
+            ThirdPlaceCol.image(image=Cache.driver_profile_picture(dfDriverStandings.iloc[2]['name']), width=250, use_column_width=True)
         except Exception as e:
             print(e)
         

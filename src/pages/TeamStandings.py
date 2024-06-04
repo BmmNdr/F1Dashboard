@@ -3,7 +3,7 @@
 import streamlit as st
 import pandas as pd
 
-import pages.data.data_cache as cache
+import pages.data.Cache as Cache
 
 #Page Configs
 st.set_page_config(page_title="Constructors Standings", layout="wide")
@@ -19,12 +19,12 @@ SecondPlaceCol, FirstPlaceCol, ThirdPlaceCol = st.columns([1, 1, 1])
 
 try:
     #Gets the team standings and displays the first three teams
-    dfTeamStandings = pd.DataFrame(cache.team_standings(), columns=['team', 'points'])
+    dfTeamStandings = pd.DataFrame(Cache.team_standings(), columns=['team', 'points'])
     dfTeamStandings.index += 1
 
     with SecondPlaceCol:
         try:
-            SecondPlaceCol.image(image=cache.team_profile_picture(dfTeamStandings.iloc[1]['team']), width=300, use_column_width=True)
+            SecondPlaceCol.image(image=Cache.team_profile_picture(dfTeamStandings.iloc[1]['team']), width=300, use_column_width=True)
         except Exception as e:
             print(e)
             
@@ -33,7 +33,7 @@ try:
         
     with FirstPlaceCol:
         try:
-            FirstPlaceCol.image(image=cache.team_profile_picture(dfTeamStandings.iloc[0]['team']), width=300, use_column_width=True)
+            FirstPlaceCol.image(image=Cache.team_profile_picture(dfTeamStandings.iloc[0]['team']), width=300, use_column_width=True)
         except Exception as e:
             print(e)
             
@@ -42,7 +42,7 @@ try:
         
     with ThirdPlaceCol:
         try:
-            ThirdPlaceCol.image(image=cache.team_profile_picture(dfTeamStandings.iloc[2]['team']), width=300, use_column_width=True)
+            ThirdPlaceCol.image(image=Cache.team_profile_picture(dfTeamStandings.iloc[2]['team']), width=300, use_column_width=True)
         except Exception as e:
             print(e)
             
