@@ -23,8 +23,65 @@ st.markdown(css, unsafe_allow_html=True)
 
 #Page Content
 
+#Next Race Row
+gap1, colNextRace, gap2 = st.columns([2, 5, 1], gap="large")
+raceFound = True
+    
+with colNextRace:
+    
+    try:
+        #Gets the Next Race Event
+        race = Cache.next_race()
+        
+        colNextRace.header("Next Race: " + race['name'])
+
+        #Displays the countdown to the next race
+        countdown = RaceUtility.countdown_to_next(race['date'], race['time'])
+        countdown_text = f"{countdown['days']} days, {countdown['hours']} hours, {countdown['minutes']} minutes, {countdown['seconds']} seconds"
+        
+        #Shows the track layout image
+        try:
+            colNextRace.image("src/images/layouts/" + race['location'] + ".png")
+        except Exception as e:
+            print(e)
+        
+    except Exception as e:
+        raceFound = False
+        st.text("Error loading Next Race")
+        print(e)
+        
+if raceFound:
+    #Display the countdown in the same way as in the Formula 1 official site
+    st.markdown(f"""
+                        <div class="centered-content">
+        <div id="countdown-clock-wrapper">
+                        <div id="countdown-clock">
+                            <div id="title-bar">{race['location']} Race</div>
+                            <div id="clock">
+                                <div id="time">
+                                    <p id="text">{countdown['days']}</p>
+                                    <span id="f1-uppercase">days</span>
+                                </div>
+                                <div id="time">
+                                    <p id="text">{countdown['hours']}</p>
+                                    <span id="f1-uppercase">hrs</span>
+                                </div>
+                                <div id="time">
+                                    <p id="text">{countdown['minutes']}</p>
+                                    <span id="f1-uppercase">mins</span>
+                                </div>
+                                <div id="time">
+                                    <p id="text">{countdown['seconds']}</p>
+                                    <span id="f1-uppercase">secs</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div><br><br>
+    """, unsafe_allow_html=True)
+
 #First Row - Driver Standings, Team Standings and Next Race
-colDriverStandings, colTeamStandings, colNextRace = st.columns([1, 1, 2], gap="large")
+colDriverStandings, colTeamStandings = st.columns([1, 1], gap="large")
 
 with colDriverStandings:
     colDriverStandings.header("Driver Standings")
@@ -48,56 +105,6 @@ with colTeamStandings:
         colTeamStandings.table(dfTeamStandingsIndex)
     except Exception as e:
         st.text("Error loading Team Standings")
-        print(e)
-    
-with colNextRace:
-    
-    try:
-        #Gets the Next Race Event
-        race = Cache.next_race()
-        
-        colNextRace.header("Next Race: " + race['name'])
-
-        #Displays the countdown to the next race
-        countdown = RaceUtility.countdown_to_next(race['date'], race['time'])
-        countdown_text = f"{countdown['days']} days, {countdown['hours']} hours, {countdown['minutes']} minutes, {countdown['seconds']} seconds"
-        
-        #Shows the track layout image
-        try:
-            colNextRace.image("src/images/layouts/" + race['location'] + ".png")
-        except Exception as e:
-            print(e)
-        
-        #Display the countdown in the same way as in the Formula 1 official site
-        colNextRace.markdown(f"""
-                            <div class="centered-content">
-            <div id="countdown-clock-wrapper">
-                            <div id="countdown-clock">
-                                <div id="title-bar">{race['location']} Race</div>
-                                <div id="clock">
-                                    <div id="time">
-                                        <p id="text">{countdown['days']}</p>
-                                        <span id="f1-uppercase">days</span>
-                                    </div>
-                                    <div id="time">
-                                        <p id="text">{countdown['hours']}</p>
-                                        <span id="f1-uppercase">hrs</span>
-                                    </div>
-                                    <div id="time">
-                                        <p id="text">{countdown['minutes']}</p>
-                                        <span id="f1-uppercase">mins</span>
-                                    </div>
-                                    <div id="time">
-                                        <p id="text">{countdown['seconds']}</p>
-                                        <span id="f1-uppercase">secs</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </div>
-        """, unsafe_allow_html=True)
-    except Exception as e:
-        st.text("Error loading Next Race")
         print(e)
     
 

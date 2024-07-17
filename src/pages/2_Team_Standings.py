@@ -38,7 +38,7 @@ try:
             print(e)
             
         FirstPlaceCol.markdown("<h2 style='text-align: center;'> 🥇 " + dfTeamStandings.iloc[0]['team'] + "</h2>", unsafe_allow_html=True)
-        FirstPlaceCol.markdown("<h5 style='text-align: center;'>" + dfTeamStandings.iloc[1]['points'] + " pts </h5>", unsafe_allow_html=True)
+        FirstPlaceCol.markdown("<h5 style='text-align: center;'>" + dfTeamStandings.iloc[0]['points'] + " pts </h5>", unsafe_allow_html=True)
         
     with ThirdPlaceCol:
         try:
@@ -47,7 +47,7 @@ try:
             print(e)
             
         ThirdPlaceCol.markdown("<h2 style='text-align: center;'> 🥉 " + dfTeamStandings.iloc[2]['team'] + "</h2>", unsafe_allow_html=True)
-        ThirdPlaceCol.markdown("<h5 style='text-align: center;'>" + dfTeamStandings.iloc[1]['points'] + " pts </h5>", unsafe_allow_html=True)
+        ThirdPlaceCol.markdown("<h5 style='text-align: center;'>" + dfTeamStandings.iloc[2]['points'] + " pts </h5>", unsafe_allow_html=True)
 
 
     #Second Row - Table with all Teams but the first three
